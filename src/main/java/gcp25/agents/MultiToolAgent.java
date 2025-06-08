@@ -1,4 +1,4 @@
-package gcp25.agents.multitool;
+package gcp25.agents;
 
 import com.google.adk.agents.BaseAgent;
 import com.google.adk.agents.LlmAgent;
