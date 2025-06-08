@@ -10,8 +10,8 @@ public class BuildAgent {
         return LlmAgent.builder()
                 .model(LLM_MODEL_NAME)
                 .name(BUILD_AGENT_NAME)
-                .description("Simulates the build process")
-                .instruction("Based on previous review, simulate build success or failure.")
+                .description("Build the project")
+                .instruction("Given the github repository, build the project and return success or failure.")
                 .outputKey("build_result")
                 .build();
     }

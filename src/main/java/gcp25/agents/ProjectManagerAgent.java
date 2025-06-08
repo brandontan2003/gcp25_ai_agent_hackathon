@@ -19,11 +19,11 @@ public class ProjectManagerAgent {
 
     public static BaseAgent ROOT_AGENT = initAgent();
 
-    private static SequentialAgent initAgent() {
+    private static BaseAgent initAgent() {
         return SequentialAgent.builder()
                 .name(PROJECT_MANAGER_AGENT_NAME)
                 .description("Manages and orchestrates the SDLC pipeline.")
-                .subAgents(CodeReviewAgent.codeReviewAgent(), BuildAgent.buildAgent(), TestAgent.testAgent(),
+                .subAgents(BuildAgent.buildAgent(), CodeReviewAgent.codeReviewAgent(), TestAgent.testAgent(),
                         SecurityScanAgent.securityScanAgent(), DeploymentAgent.deploymentAgent())
                 .build();
     }
