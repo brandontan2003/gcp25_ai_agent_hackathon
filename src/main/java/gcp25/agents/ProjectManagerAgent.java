@@ -23,8 +23,9 @@ public class ProjectManagerAgent {
         return SequentialAgent.builder()
                 .name(PROJECT_MANAGER_AGENT_NAME)
                 .description("Manages and orchestrates the SDLC pipeline.")
-                .subAgents(BuildAgent.buildAgent(), CodeReviewAgent.codeReviewAgent(), TestAgent.testAgent(),
-                        SecurityScanAgent.securityScanAgent(), DeploymentAgent.deploymentAgent())
+                .subAgents(RepoCloneAgent.repoCloneAgent())
+//                .subAgents(RepoCloneAgent.repoCloneAgent(), BuildAgent.buildAgent(), CodeReviewAgent.codeReviewAgent(),
+//                        TestAgent.testAgent(), SecurityScanAgent.securityScanAgent(), DeploymentAgent.deploymentAgent())
                 .build();
     }
 
