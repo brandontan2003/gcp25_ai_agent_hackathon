@@ -13,6 +13,6 @@ echo "GOOGLE_GENAI_USE_VERTEXAI: $GOOGLE_GENAI_USE_VERTEXAI"
 echo "GOOGLE_API_KEY: $GOOGLE_API_KEY"
 
 mvn exec:java \
-    -Dexec.mainClass="com.google.adk.web.AdkWebServer" \
-    -Dexec.args="--adk.agents.source-dir=src/main/java" \
-    -Dexec.classpathScope="compile"
+  -Dserver.port=9090 -Dexec.mainClass="com.google.adk.web.AdkWebServer" \
+  -Dexec.args="--adk.agents.source-dir=src/main/java" \
+  -Dexec.classpathScope="compile"
