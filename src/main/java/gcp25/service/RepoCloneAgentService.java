@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
 
+import static gcp25.constants.AgentServiceConstant.*;
+
 public class RepoCloneAgentService {
     private static Boolean isValidGitHubUrl(String url) {
         return url.matches("^https://github.com/[\\w.-]+/[\\w.-]+(\\.git)?$");
@@ -17,10 +19,12 @@ public class RepoCloneAgentService {
     public static Map<String, String> cloneRepoService(@Schema(description = "The Github url to be cloned.") String repoUrl) {
         if (repoUrl == null || !isValidGitHubUrl(repoUrl)) {
             return Map.of(
-                    "status", "error", "report", "Repository " + repoUrl + " is not accessible or invalid.");
+                    STATUS, STATUS_ERROR,
+                    REPORT, "Repository " + repoUrl + " is not accessible or invalid.");
         }
 
-        Path destination = Paths.get(System.getProperty("java.io.tmpdir"), "repo_" + UUID.randomUUID());
+        // TODO Add UUID.randomUUID in the future
+        Path destination = Paths.get(System.getProperty("java.io.tmpdir"), "repo_");
 
         try {
             Files.createDirectories(destination);
@@ -40,14 +44,15 @@ public class RepoCloneAgentService {
                 throw new RuntimeException("Git clone failed:\n" + output);
             }
 
-            System.out.println("✅ Repo cloned to: " + destination);
+            System.out.println("✅ Repo cloned to: " + destination.toAbsolutePath());
             return Map.of(
-                    "status", "success", "report", "Repository has been cloned to temp folder: " + destination);
+                    STATUS, STATUS_SUCCESS,
+                    "repo_path", destination.toAbsolutePath().toString());
 
         } catch (IOException | InterruptedException e) {
             return Map.of(
-                    "status", "error", "report", "Error during git clone: " + e);
-
+                    STATUS, STATUS_ERROR,
+                    REPORT, "Error during git clone: " + e);
         }
     }
 }
