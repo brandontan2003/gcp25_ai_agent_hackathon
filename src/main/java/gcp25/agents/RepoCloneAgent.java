@@ -37,9 +37,9 @@ public class RepoCloneAgent {
 
                         Always keep the output key as `repo_path`, which can be used by downstream agents for further processing like building or analyzing the codebase.
                         """)
-//                .tools(
-//                        FunctionTool.create(RepoCloneAgentService.class, "cloneRepoService")
-//                )
+                .tools(
+                        FunctionTool.create(RepoCloneAgentService.class, "cloneRepoService")
+                )
                 .outputKey("repo_path")
                 .build();
     }

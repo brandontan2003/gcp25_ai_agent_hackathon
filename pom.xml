@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.gcp25</groupId>
+  <groupId>com.gcp.agent25</groupId>
   <artifactId>gcp25_ai_agent_hackathon</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
