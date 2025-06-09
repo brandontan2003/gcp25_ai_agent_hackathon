@@ -1,31 +1,27 @@
 package gcp25.service;
 
 import com.google.adk.tools.Annotations.Schema;
+import gcp25.utils.LogsUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import static gcp25.constants.AgentServiceConstant.*;
+import static gcp25.utils.LogsUtils.tail;
+import static gcp25.utils.RepoUtils.isValidRepoPath;
 
 public class BuildAgentService {
 
     public static Map<String, String> buildProjectService(@Schema(description = "Temporary repository path.") String repoPath) {
-        if (repoPath == null || repoPath.isBlank()) {
-            return Map.of(
-                    STATUS, STATUS_ERROR,
-                    REPORT, "Repository path is missing or empty."
-            );
-        }
-
-        File repoDir = new File(repoPath);
-        if (!repoDir.exists() || !repoDir.isDirectory()) {
+        if (!isValidRepoPath(repoPath)) {
             return Map.of(
                     STATUS, STATUS_ERROR,
                     REPORT, "Repository path is invalid: " + repoPath
             );
         }
 
+        File repoDir = new File(repoPath);
         // Detect build system
         String[] buildCommand = detectBuildCommand(repoDir);
         if (buildCommand == null) {
@@ -47,13 +43,13 @@ public class BuildAgentService {
             if (exitCode != 0) {
                 return Map.of(
                         STATUS, STATUS_ERROR,
-                        REPORT, "Build failed with exit code " + exitCode + ". Output:\n" + output
+                        REPORT, "Build failed with exit code " + exitCode + ". Output:\n" + tail(output)
                 );
             }
 
             return Map.of(
                     STATUS, STATUS_SUCCESS,
-                    "build_result", output
+                    "build_result", tail(output)
             );
 
         } catch (IOException | InterruptedException ex) {
