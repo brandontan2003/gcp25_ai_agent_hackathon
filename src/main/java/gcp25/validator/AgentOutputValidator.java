@@ -20,19 +20,8 @@ public class AgentOutputValidator {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static final Logger log = LoggerFactory.getLogger(AgentOutputValidator.class);
 
-    public static Callbacks.AfterModelCallbackSync afterAgentCallback = (context, response) -> {
-        String agentName = context.agentName();
-        log.info("Validating Agent :::::::::: " + agentName);
-        Optional<Content> output = context.userContent();
-        log.info("User Content :::::::::::::: " + output);
-        log.info("Response :::::::::::::: " + response);
-        return Optional.of(response);
-    };
-
     public static Callbacks.AfterToolCallback afterToolCallback =
-            (invocationContext, baseTool, input, toolContext, toolResponse) -> {
-                return validateAgentOutput(toolResponse);
-            };
+            (invocationContext, baseTool, input, toolContext, toolResponse) -> validateAgentOutput(toolResponse);
 
     private static Maybe<Map<String, Object>> validateAgentOutput(Object toolResponse) {
         if (toolResponse == null) return Maybe.empty();

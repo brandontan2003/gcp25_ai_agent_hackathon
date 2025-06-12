@@ -41,7 +41,6 @@ public class RepoCloneAgent {
                 .tools(
                         FunctionTool.create(RepoCloneAgentService.class, "cloneRepoService")
                 )
-                .afterModelCallbackSync(AgentOutputValidator.afterAgentCallback)
                 .afterToolCallback(AgentOutputValidator.afterToolCallback)
                 .outputKey("repo_path")
                 .build();
