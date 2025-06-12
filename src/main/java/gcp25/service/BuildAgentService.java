@@ -1,7 +1,6 @@
 package gcp25.service;
 
 import com.google.adk.tools.Annotations.Schema;
-import gcp25.utils.LogsUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,8 @@ import static gcp25.utils.RepoUtils.isValidRepoPath;
 
 public class BuildAgentService {
 
-    public static Map<String, String> buildProjectService(@Schema(description = "Temporary repository path.") String repoPath) {
+    @Schema(description = "Temporary repository path.")
+    public static Map<String, String> buildProjectService(String repoPath) {
         if (!isValidRepoPath(repoPath)) {
             return Map.of(
                     STATUS, STATUS_ERROR,
