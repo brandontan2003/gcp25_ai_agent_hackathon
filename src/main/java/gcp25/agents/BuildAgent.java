@@ -3,9 +3,9 @@ package gcp25.agents;
 import com.google.adk.agents.LlmAgent;
 import com.google.adk.tools.FunctionTool;
 import gcp25.service.BuildAgentService;
+import gcp25.validator.AgentOutputValidator;
 
-import static gcp25.constants.AgentCommonConstant.BUILD_AGENT_NAME;
-import static gcp25.constants.AgentCommonConstant.LLM_MODEL_NAME;
+import static gcp25.constants.AgentCommonConstant.*;
 
 public class BuildAgent {
     public static LlmAgent buildAgent() {
@@ -42,7 +42,8 @@ public class BuildAgent {
                                 """
                 )
                 .tools(FunctionTool.create(BuildAgentService.class, "buildProjectService"))
-                .outputKey("build_result")
+                .afterToolCallback(AgentOutputValidator.afterToolCallback)
+                .outputKey(BUILD_RESULT_OUTPUT)
                 .build();
     }
 }
