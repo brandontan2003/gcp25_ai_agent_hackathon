@@ -5,8 +5,7 @@ import com.google.adk.tools.FunctionTool;
 import gcp25.service.RepoCloneAgentService;
 import gcp25.validator.AgentOutputValidator;
 
-import static gcp25.constants.AgentCommonConstant.GITHUB_REPOSITORY_CLONE_AGENT_NAME;
-import static gcp25.constants.AgentCommonConstant.LLM_MODEL_NAME;
+import static gcp25.constants.AgentCommonConstant.*;
 
 public class RepoCloneAgent {
     public static LlmAgent repoCloneAgent() {
@@ -42,7 +41,7 @@ public class RepoCloneAgent {
                         FunctionTool.create(RepoCloneAgentService.class, "cloneRepoService")
                 )
                 .afterToolCallback(AgentOutputValidator.afterToolCallback)
-                .outputKey("repo_path")
+                .outputKey(REPO_PATH_OUTPUT)
                 .build();
     }
 }

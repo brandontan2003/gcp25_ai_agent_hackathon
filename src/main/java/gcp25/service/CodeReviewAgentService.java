@@ -2,6 +2,7 @@ package gcp25.service;
 
 
 import com.google.adk.tools.Annotations.Schema;
+import gcp25.dto.AgentToolResponse;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,19 +14,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static gcp25.constants.AgentServiceConstant.*;
+import static gcp25.constants.AgentCommonConstant.COLON_SPACE;
+import static gcp25.constants.AgentCommonConstant.REVIEW_COMMENTS_OUTPUT;
+import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
+import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
 import static gcp25.utils.RepoUtils.isValidRepoPath;
+import static gcp25.utils.ResponseUtils.buildResponse;
 
 public class CodeReviewAgentService {
     private static final Set<String> SUPPORTED_EXTENSIONS = Set.of("java", "py", "js", "ts", "go", "cs", "cpp");
 
     @Schema(description = "Path to the local cloned GitHub repository")
-    public static Map<String, String> reviewCodeService(String repoPath) {
+    public static Map<String, AgentToolResponse> reviewCodeService(String repoPath) {
         if (repoPath == null || repoPath.isBlank() || !isValidRepoPath(repoPath)) {
-            return Map.of(
-                    STATUS, STATUS_ERROR,
-                    REPORT, "Repository path is missing or invalid: " + repoPath
-            );
+            return buildResponse(STATUS_ERROR, "Repository path is missing or invalid: " + repoPath);
         }
 
         StringBuilder reviewInput = new StringBuilder();
@@ -37,10 +39,7 @@ public class CodeReviewAgentService {
                     .collect(Collectors.toList());
 
             if (codeFiles.isEmpty()) {
-                return Map.of(
-                        STATUS, STATUS_ERROR,
-                        REPORT, "No supported code files found in the repository."
-                );
+                return buildResponse(STATUS_ERROR, "No supported code files found in the repository.");
             }
 
             for (Path file : codeFiles) {
@@ -49,17 +48,10 @@ public class CodeReviewAgentService {
                 reviewInput.append("```").append(getLanguageTag(file)).append("\n");
                 reviewInput.append(Files.readString(file)).append("\n```\n\n");
             }
+            return buildResponse(STATUS_SUCCESS, REVIEW_COMMENTS_OUTPUT + COLON_SPACE + reviewInput);
 
-            return Map.of(
-                    STATUS, STATUS_SUCCESS,
-                    "review_comments", reviewInput.toString()
-            );
-
-        } catch (IOException e) {
-            return Map.of(
-                    STATUS, STATUS_ERROR,
-                    REPORT, "Failed to read source files: " + e.getMessage()
-            );
+        } catch (IOException ex) {
+            return buildResponse(STATUS_ERROR, "Failed to read source files: " + ex.getMessage());
         }
     }
 

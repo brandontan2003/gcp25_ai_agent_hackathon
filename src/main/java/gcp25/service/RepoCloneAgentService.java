@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static gcp25.constants.AgentCommonConstant.COLON_SPACE;
+import static gcp25.constants.AgentCommonConstant.REPO_PATH_OUTPUT;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
 import static gcp25.utils.ResponseUtils.buildResponse;
@@ -46,7 +48,7 @@ public class RepoCloneAgentService {
             }
 
             System.out.println("✅ Repo cloned to: " + destination.toAbsolutePath());
-            return buildResponse(STATUS_SUCCESS, "repo_path" + destination.toAbsolutePath());
+            return buildResponse(STATUS_SUCCESS, REPO_PATH_OUTPUT + COLON_SPACE + destination.toAbsolutePath());
 
         } catch (IOException | InterruptedException e) {
             return buildResponse(STATUS_ERROR, "Error during git clone: " + e);

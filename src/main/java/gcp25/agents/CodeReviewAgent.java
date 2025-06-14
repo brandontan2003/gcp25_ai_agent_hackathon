@@ -5,8 +5,7 @@ import com.google.adk.tools.FunctionTool;
 import gcp25.service.CodeReviewAgentService;
 import gcp25.validator.AgentOutputValidator;
 
-import static gcp25.constants.AgentCommonConstant.CODE_REVIEW_AGENT_NAME;
-import static gcp25.constants.AgentCommonConstant.LLM_MODEL_NAME;
+import static gcp25.constants.AgentCommonConstant.*;
 
 public class CodeReviewAgent {
     public static LlmAgent codeReviewAgent() {
@@ -22,8 +21,8 @@ public class CodeReviewAgent {
 
                         Provide file-specific feedback using markdown. Focus only on the content shown.
                         """)
-                .outputKey("review_comments")
                 .tools(FunctionTool.create(CodeReviewAgentService.class, "reviewCodeService"))
+                .outputKey(REVIEW_COMMENTS_OUTPUT)
                 .build();
     }
 }

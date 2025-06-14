@@ -13,4 +13,9 @@ public class AgentCommonConstant {
     public static final String SECURITY_SCAN_AGENT_NAME = "security_scan_agent";
     public static final String DEPLOYMENT_AGENT_NAME = "deployment_agent";
 
+    public static final String COLON_SPACE = ": ";
+    public static final String REPO_PATH_OUTPUT = "repo_path";
+    public static final String BUILD_RESULT_OUTPUT = "build_result";
+    public static final String REVIEW_COMMENTS_OUTPUT = "review_comments";
+
 }
