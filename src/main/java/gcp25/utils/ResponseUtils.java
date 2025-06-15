@@ -48,4 +48,14 @@ public class ResponseUtils {
         response.setResult(agentToolMessage);
         return Map.of(RESPONSE, response);
     }
+
+    public static Map<String, AgentToolResponse> buildSecurityScanResponse(String status, String securityScan) {
+        AgentToolMessage agentToolMessage = new AgentToolMessage();
+        agentToolMessage.setBuildResult(securityScan);
+
+        AgentToolResponse response = new AgentToolResponse();
+        response.setStatus(status);
+        response.setResult(agentToolMessage);
+        return Map.of(RESPONSE, response);
+    }
 }

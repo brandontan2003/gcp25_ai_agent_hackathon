@@ -9,6 +9,7 @@ public class AgentToolMessage implements Serializable {
     private String repoPath;
     private String buildResult;
     private String reviewComments;
+    private String securityScan;
 
     public String getError() {
         return error;
@@ -42,14 +43,12 @@ public class AgentToolMessage implements Serializable {
         this.reviewComments = reviewComments;
     }
 
-    @Override
-    public String toString() {
-        return "AgentToolMessage{" +
-                "error='" + error + '\'' +
-                ", repoPath='" + repoPath + '\'' +
-                ", buildResult='" + buildResult + '\'' +
-                ", reviewComments='" + reviewComments + '\'' +
-                '}';
+    public String getSecurityScan() {
+        return securityScan;
+    }
+
+    public void setSecurityScan(String securityScan) {
+        this.securityScan = securityScan;
     }
 
     @Override
@@ -57,11 +56,22 @@ public class AgentToolMessage implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AgentToolMessage that = (AgentToolMessage) o;
-        return Objects.equals(error, that.error) && Objects.equals(repoPath, that.repoPath) && Objects.equals(buildResult, that.buildResult) && Objects.equals(reviewComments, that.reviewComments);
+        return Objects.equals(error, that.error) && Objects.equals(repoPath, that.repoPath) && Objects.equals(buildResult, that.buildResult) && Objects.equals(reviewComments, that.reviewComments) && Objects.equals(securityScan, that.securityScan);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(error, repoPath, buildResult, reviewComments);
+        return Objects.hash(error, repoPath, buildResult, reviewComments, securityScan);
+    }
+
+    @Override
+    public String toString() {
+        return "AgentToolMessage{" +
+                "error='" + error + '\'' +
+                ", repoPath='" + repoPath + '\'' +
+                ", buildResult='" + buildResult + '\'' +
+                ", reviewComments='" + reviewComments + '\'' +
+                ", securityScan='" + securityScan + '\'' +
+                '}';
     }
 }
