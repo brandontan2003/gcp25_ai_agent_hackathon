@@ -17,7 +17,8 @@ import java.util.stream.Stream;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
 import static gcp25.utils.RepoUtils.isValidRepoPath;
-import static gcp25.utils.ResponseUtils.*;
+import static gcp25.utils.ResponseUtils.buildErrorResponse;
+import static gcp25.utils.ResponseUtils.buildSecurityScanResponse;
 
 public class SecurityScanAgentService {
     private static final Set<String> SUPPORTED_EXTENSIONS = Set.of("java", "py", "js", "ts", "go", "cs", "cpp");

@@ -12,8 +12,8 @@ import java.util.UUID;
 
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
-import static gcp25.utils.ResponseUtils.buildRepoPathResponse;
 import static gcp25.utils.ResponseUtils.buildErrorResponse;
+import static gcp25.utils.ResponseUtils.buildRepoPathResponse;
 
 public class RepoCloneAgentService {
     private static Boolean isValidGitHubUrl(String url) {

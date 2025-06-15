@@ -14,15 +14,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
-import static gcp25.constants.AgentCommonConstant.*;
 import static gcp25.constants.AgentServiceConstant.RESPONSE;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 
 public class AgentOutputValidator {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static final Logger log = LoggerFactory.getLogger(AgentOutputValidator.class);
+    public static final String SECURITY_SCAN_CLEAN_MESSAGE = "No security issues detected in the scanned code.";
 
     public static Callbacks.AfterModelCallbackSync afterModelCallbackSync = AgentOutputValidator::validateModelOutput;
 
@@ -33,7 +32,7 @@ public class AgentOutputValidator {
             Content content = llmResponse.content().get();
             String text = content.text();
             log.info("LLM Text Response :::::::::::::: {}", text);
-            if ("No security issues detected in the scanned code.".equalsIgnoreCase(text)) {
+            if (SECURITY_SCAN_CLEAN_MESSAGE.equalsIgnoreCase(text)) {
                 return Optional.of(llmResponse);
             }
             return Optional.of(llmResponse);
