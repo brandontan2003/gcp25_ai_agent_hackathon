@@ -8,12 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
-import static gcp25.constants.AgentCommonConstant.COLON_SPACE;
-import static gcp25.constants.AgentCommonConstant.REPO_PATH_OUTPUT;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
-import static gcp25.utils.ResponseUtils.buildResponse;
+import static gcp25.utils.ResponseUtils.buildRepoPathResponse;
+import static gcp25.utils.ResponseUtils.buildErrorResponse;
 
 public class RepoCloneAgentService {
     private static Boolean isValidGitHubUrl(String url) {
@@ -23,11 +23,10 @@ public class RepoCloneAgentService {
     @Schema(description = "The Github url to be cloned.")
     public static Map<String, AgentToolResponse> cloneRepoService(String repoUrl) {
         if (repoUrl == null || !isValidGitHubUrl(repoUrl)) {
-            return buildResponse(STATUS_ERROR, "Repository " + repoUrl + " is not accessible or invalid.");
+            return buildErrorResponse(STATUS_ERROR, "Repository " + repoUrl + " is not accessible or invalid.");
         }
 
-        // TODO Add UUID.randomUUID in the future
-        Path destination = Paths.get(System.getProperty("java.io.tmpdir"), "repo_");
+        Path destination = Paths.get(System.getProperty("java.io.tmpdir"), "repo/" + UUID.randomUUID());
 
         try {
             Files.createDirectories(destination);
@@ -44,14 +43,13 @@ public class RepoCloneAgentService {
             int exitCode = process.waitFor();
 
             if (exitCode != 0) {
-                return buildResponse(STATUS_ERROR,"Error during git clone: " + output);
+                return buildErrorResponse(STATUS_ERROR,"Error during git clone: " + output);
             }
 
-            System.out.println("✅ Repo cloned to: " + destination.toAbsolutePath());
-            return buildResponse(STATUS_SUCCESS, REPO_PATH_OUTPUT + COLON_SPACE + destination.toAbsolutePath());
+            return buildRepoPathResponse(STATUS_SUCCESS, String.valueOf(destination.toAbsolutePath()));
 
         } catch (IOException | InterruptedException e) {
-            return buildResponse(STATUS_ERROR, "Error during git clone: " + e);
+            return buildErrorResponse(STATUS_ERROR, "Error during git clone: " + e);
         }
     }
 }

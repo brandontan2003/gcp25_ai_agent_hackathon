@@ -7,27 +7,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static gcp25.constants.AgentCommonConstant.BUILD_RESULT_OUTPUT;
-import static gcp25.constants.AgentCommonConstant.COLON_SPACE;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 import static gcp25.constants.AgentServiceConstant.STATUS_SUCCESS;
 import static gcp25.utils.LogsUtils.tail;
 import static gcp25.utils.RepoUtils.isValidRepoPath;
-import static gcp25.utils.ResponseUtils.buildResponse;
+import static gcp25.utils.ResponseUtils.buildErrorResponse;
+import static gcp25.utils.ResponseUtils.buildResultResponse;
 
 public class BuildAgentService {
 
     @Schema(description = "Temporary repository path.")
     public static Map<String, AgentToolResponse> buildProjectService(String repoPath) {
         if (!isValidRepoPath(repoPath)) {
-            return buildResponse(STATUS_ERROR, "Repository path is invalid: " + repoPath);
+            return buildErrorResponse(STATUS_ERROR, "Repository path is invalid: " + repoPath);
         }
 
         File repoDir = new File(repoPath);
         // Detect build system
         String[] buildCommand = detectBuildCommand(repoDir);
         if (buildCommand == null) {
-            return buildResponse(STATUS_ERROR, "No supported build system detected in: " + repoPath);
+            return buildErrorResponse(STATUS_ERROR, "No supported build system detected in: " + repoPath);
         }
 
         try {
@@ -40,13 +39,13 @@ public class BuildAgentService {
             int exitCode = process.waitFor();
 
             if (exitCode != 0) {
-                return buildResponse(STATUS_ERROR,
+                return buildErrorResponse(STATUS_ERROR,
                         "Build failed with exit code " + exitCode + ". Output:\n" + tail(output));
             }
-            return buildResponse(STATUS_SUCCESS, BUILD_RESULT_OUTPUT + COLON_SPACE + tail(output));
+            return buildResultResponse(STATUS_SUCCESS, tail(output));
 
         } catch (IOException | InterruptedException ex) {
-            return buildResponse(STATUS_ERROR, "Build process error: " + ex.getMessage());
+            return buildErrorResponse(STATUS_ERROR, "Build process error: " + ex.getMessage());
         }
     }
 
