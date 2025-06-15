@@ -5,8 +5,7 @@ import com.google.adk.tools.FunctionTool;
 import gcp25.service.SecurityScanAgentService;
 import gcp25.validator.AgentOutputValidator;
 
-import static gcp25.constants.AgentCommonConstant.LLM_MODEL_NAME;
-import static gcp25.constants.AgentCommonConstant.SECURITY_SCAN_AGENT_NAME;
+import static gcp25.constants.AgentCommonConstant.*;
 
 public class SecurityScanAgent {
     public static LlmAgent securityScanAgent() {
@@ -34,7 +33,7 @@ public class SecurityScanAgent {
                         """)
                 .tools(FunctionTool.create(SecurityScanAgentService.class, "securityScanService"))
                 .afterModelCallbackSync(AgentOutputValidator.afterModelCallbackSync)
-                .outputKey("security_scan_result")
+                .outputKey(SECURITY_SCAN_OUTPUT)
                 .build();
     }
 }
