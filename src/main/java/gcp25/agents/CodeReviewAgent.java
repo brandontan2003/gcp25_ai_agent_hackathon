@@ -3,7 +3,7 @@ package gcp25.agents;
 import com.google.adk.agents.LlmAgent;
 import com.google.adk.tools.FunctionTool;
 import gcp25.service.CodeReviewAgentService;
-import gcp25.validator.AgentOutputValidator;
+import gcp25.validator.AgentCallback;
 
 import static gcp25.constants.AgentCommonConstant.*;
 
@@ -43,7 +43,7 @@ public class CodeReviewAgent {
                         Suggestion: Split into smaller, single-responsibility methods
                         """)
                 .tools(FunctionTool.create(CodeReviewAgentService.class, "reviewCodeService"))
-                .afterModelCallbackSync(AgentOutputValidator.afterModelCallbackSync)
+                .afterModelCallbackSync(AgentCallback.afterModelCallbackSync)
                 .outputKey(REVIEW_COMMENTS_OUTPUT)
                 .build();
     }

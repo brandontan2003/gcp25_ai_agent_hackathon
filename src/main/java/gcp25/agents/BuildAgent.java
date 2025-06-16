@@ -3,7 +3,7 @@ package gcp25.agents;
 import com.google.adk.agents.LlmAgent;
 import com.google.adk.tools.FunctionTool;
 import gcp25.service.BuildAgentService;
-import gcp25.validator.AgentOutputValidator;
+import gcp25.validator.AgentCallback;
 
 import static gcp25.constants.AgentCommonConstant.*;
 
@@ -42,7 +42,7 @@ public class BuildAgent {
                                 """
                 )
                 .tools(FunctionTool.create(BuildAgentService.class, "buildProjectService"))
-                .afterToolCallback(AgentOutputValidator.afterToolCallback)
+                .afterToolCallback(AgentCallback.afterToolCallback)
                 .outputKey(BUILD_RESULT_OUTPUT)
                 .build();
     }
