@@ -5,17 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gcp.agent25.cases.management.service.dto.CreateTicketRequest;
 import com.gcp.agent25.cases.management.service.enums.TicketStatusEnum;
-import com.gcp.agent25.common.core.service.TicketWebClientService;
 import com.google.adk.agents.CallbackContext;
 import com.google.adk.agents.Callbacks;
 import com.google.adk.models.LlmResponse;
 import com.google.adk.tools.ToolContext;
 import com.google.genai.types.Content;
 import gcp25.dto.AgentToolResponse;
+import gcp25.utils.TicketServiceUtil;
 import io.reactivex.rxjava3.core.Maybe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,9 +26,6 @@ public class AgentCallback {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static final Logger log = LoggerFactory.getLogger(AgentCallback.class);
     public static final String SECURITY_SCAN_CLEAN_MESSAGE = "No security issues detected in the scanned code.";
-
-    @Autowired
-    private static TicketWebClientService ticketService;
 
     public static Callbacks.AfterModelCallbackSync afterModelCallbackSync = AgentCallback::validateModelOutput;
 
@@ -59,7 +55,8 @@ public class AgentCallback {
         AgentToolResponse response = map.get(RESPONSE);
         log.info("AfterToolCallback Response :::::::::::::: {}", response);
         if (STATUS_ERROR.equalsIgnoreCase(response.getStatus())) {
-            ticketService.createTicket(buildCreateTicketRequest(toolContext.agentName() + toolContext.functionCallId(),
+            TicketServiceUtil.getService().createTicket(
+                    buildCreateTicketRequest(toolContext.agentName() + toolContext.functionCallId(),
                     response.getResult().getError()));
 
             log.info("ToolFunction Error Response :::::::::::::: {}", response.getResult().getError());

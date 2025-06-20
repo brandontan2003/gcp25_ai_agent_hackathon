@@ -1,5 +1,6 @@
 package gcp25.agents;
 
+import com.gcp.agent25.common.core.properties.TicketEndpointProperties;
 import com.google.adk.agents.BaseAgent;
 import com.google.adk.agents.SequentialAgent;
 import com.google.adk.events.Event;
@@ -7,6 +8,7 @@ import com.google.adk.runner.InMemoryRunner;
 import com.google.adk.sessions.Session;
 import com.google.genai.types.Content;
 import com.google.genai.types.Part;
+import gcp25.configurations.SpringContextHolder;
 import io.reactivex.rxjava3.core.Flowable;
 
 import java.nio.charset.StandardCharsets;
@@ -17,7 +19,23 @@ import static gcp25.constants.AgentCommonConstant.USER_ID;
 
 public class ProjectManagerAgent {
 
-    public static BaseAgent ROOT_AGENT = initAgent();
+    public static final BaseAgent ROOT_AGENT;
+
+    static {
+        SpringContextHolder.getContext();
+        verifyTicketEndpointLoaded();
+        ROOT_AGENT = initAgent();
+    }
+
+    private static void verifyTicketEndpointLoaded() {
+        var context = SpringContextHolder.getContext();
+        if (context.containsBean("ticketEndpointProperties")) {
+            var props = context.getBean("ticketEndpointProperties", TicketEndpointProperties.class);
+            System.out.println("createTicket endpoint: " + props.getCreateTicket().toUrl());
+        } else {
+            System.err.println("TicketEndpointProperties bean NOT found!");
+        }
+    }
 
     private static BaseAgent initAgent() {
         return SequentialAgent.builder()
