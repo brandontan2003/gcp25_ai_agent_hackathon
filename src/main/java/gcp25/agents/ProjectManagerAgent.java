@@ -1,6 +1,5 @@
 package gcp25.agents;
 
-import com.gcp.agent25.common.core.properties.TicketEndpointProperties;
 import com.google.adk.agents.BaseAgent;
 import com.google.adk.agents.SequentialAgent;
 import com.google.adk.events.Event;
@@ -36,14 +35,7 @@ public class ProjectManagerAgent {
     }
 
     public static void main(String[] args) {
-        InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT);
-
-        Session session =
-                runner
-                        .sessionService()
-                        .createSession(PROJECT_MANAGER_AGENT_NAME, USER_ID)
-                        .blockingGet();
-
+        ProjectManagerAgent projectManagerAgent = new ProjectManagerAgent();
         try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
             while (true) {
                 System.out.print("\nYou > ");
@@ -52,13 +44,25 @@ public class ProjectManagerAgent {
                 if ("quit".equalsIgnoreCase(userInput)) {
                     break;
                 }
-
-                Content userMsg = Content.fromParts(Part.fromText(userInput));
-                Flowable<Event> events = runner.runAsync(USER_ID, session.id(), userMsg);
-
-                System.out.print("\nAgent > ");
-                events.blockingForEach(event -> System.out.println(event.stringifyContent()));
+                projectManagerAgent.runAgent(userInput);
             }
         }
+    }
+
+
+    public void runAgent(String prompt) {
+        InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT, PROJECT_MANAGER_AGENT_NAME);
+
+        Session session = runner.sessionService().createSession(PROJECT_MANAGER_AGENT_NAME, USER_ID).blockingGet();
+
+        Content userMessage = Content.fromParts(Part.fromText(prompt));
+        Flowable<Event> eventStream = runner.runAsync(USER_ID, session.id(), userMessage);
+
+        eventStream.blockingForEach(
+                event -> {
+                    if (event.finalResponse()) {
+                        System.out.println("Final Response :::::::::: " + event.stringifyContent());
+                    }
+                });
     }
 }

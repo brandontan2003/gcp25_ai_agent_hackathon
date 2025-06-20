@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Optional;
 
+import static gcp25.constants.AgentCommonConstant.SECURITY_SCAN_AGENT_NAME;
 import static gcp25.constants.AgentServiceConstant.RESPONSE;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 
@@ -36,7 +37,7 @@ public class AgentCallback {
             Content content = llmResponse.content().get();
             String text = content.text();
             log.info("AfterModelCallback LLM Text Response :::::::::::::: {}", text);
-            if (SECURITY_SCAN_CLEAN_MESSAGE.equalsIgnoreCase(text)) {
+            if (SECURITY_SCAN_AGENT_NAME.equalsIgnoreCase(context.agentName())) { //TODO Fix on the Security Scan Agent
                 return Optional.of(llmResponse);
             } else {
                 TicketServiceUtil.getService().createTicket(
@@ -59,11 +60,11 @@ public class AgentCallback {
         AgentToolResponse response = map.get(RESPONSE);
         log.info("AfterToolCallback Response :::::::::::::: {}", response);
         if (STATUS_ERROR.equalsIgnoreCase(response.getStatus())) {
-            log.info("ToolFunction Error Response :::::::::::::: {}", response.getResult().getError());
+            String errorMsg = response.getResult().getError();
+            log.info("ToolFunction Error Response :::::::::::::: {}", errorMsg);
 
             TicketServiceUtil.getService().createTicket(
-                    buildCreateTicketRequest("Error occurred while executing: " + toolContext.agentName(),
-                            response.getResult().getError()));
+                    buildCreateTicketRequest("Error occurred while executing: " + toolContext.agentName(), errorMsg));
             return Maybe.just(Map.of(RESPONSE, response));
         }
         return Maybe.just(Map.of(RESPONSE, response));
