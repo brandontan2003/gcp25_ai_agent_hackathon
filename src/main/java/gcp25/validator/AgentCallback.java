@@ -34,9 +34,13 @@ public class AgentCallback {
         log.info("AfterModelCallback Response :::::::::::::: {}", llmResponse);
         if (llmResponse.content().isPresent()) {
             Content content = llmResponse.content().get();
-            log.info("AfterModelCallback LLM Text Response :::::::::::::: {}", content.text());
-            if (SECURITY_SCAN_CLEAN_MESSAGE.equalsIgnoreCase(content.text())) {
+            String text = content.text();
+            log.info("AfterModelCallback LLM Text Response :::::::::::::: {}", text);
+            if (SECURITY_SCAN_CLEAN_MESSAGE.equalsIgnoreCase(text)) {
                 return Optional.of(llmResponse);
+            } else {
+                TicketServiceUtil.getService().createTicket(
+                        buildCreateTicketRequest("Error occurred while executing: " + context.agentName(), text));
             }
             return Optional.of(llmResponse);
         }
@@ -55,11 +59,11 @@ public class AgentCallback {
         AgentToolResponse response = map.get(RESPONSE);
         log.info("AfterToolCallback Response :::::::::::::: {}", response);
         if (STATUS_ERROR.equalsIgnoreCase(response.getStatus())) {
-            TicketServiceUtil.getService().createTicket(
-                    buildCreateTicketRequest(toolContext.agentName() + toolContext.functionCallId(),
-                    response.getResult().getError()));
-
             log.info("ToolFunction Error Response :::::::::::::: {}", response.getResult().getError());
+
+            TicketServiceUtil.getService().createTicket(
+                    buildCreateTicketRequest("Error occurred while executing: " + toolContext.agentName(),
+                            response.getResult().getError()));
             return Maybe.just(Map.of(RESPONSE, response));
         }
         return Maybe.just(Map.of(RESPONSE, response));
@@ -67,7 +71,6 @@ public class AgentCallback {
 
     private static CreateTicketRequest buildCreateTicketRequest(String title, String description) {
         return CreateTicketRequest.builder().title(title).description(description).status(TicketStatusEnum.OPEN).build();
-
     }
 
 }

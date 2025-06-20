@@ -23,18 +23,7 @@ public class ProjectManagerAgent {
 
     static {
         SpringContextHolder.getContext();
-        verifyTicketEndpointLoaded();
         ROOT_AGENT = initAgent();
-    }
-
-    private static void verifyTicketEndpointLoaded() {
-        var context = SpringContextHolder.getContext();
-        if (context.containsBean("ticketEndpointProperties")) {
-            var props = context.getBean("ticketEndpointProperties", TicketEndpointProperties.class);
-            System.out.println("createTicket endpoint: " + props.getCreateTicket().toUrl());
-        } else {
-            System.err.println("TicketEndpointProperties bean NOT found!");
-        }
     }
 
     private static BaseAgent initAgent() {
