@@ -15,24 +15,25 @@ import gcp25.utils.TicketServiceUtil;
 import io.reactivex.rxjava3.core.Maybe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Map;
 import java.util.Optional;
 
 import static gcp25.constants.AgentCommonConstant.SECURITY_SCAN_AGENT_NAME;
+import static gcp25.constants.AgentCommonConstant.SECURITY_SCAN_OUTPUT;
 import static gcp25.constants.AgentServiceConstant.RESPONSE;
 import static gcp25.constants.AgentServiceConstant.STATUS_ERROR;
 
 public class AgentCallback {
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static final Logger log = LoggerFactory.getLogger(AgentCallback.class);
-    public static final String SECURITY_SCAN_CLEAN_MESSAGE = "No security issues detected in the scanned code.";
+    public static final String SECURITY_SCAN_CLEAN_MESSAGE = "No security issues";
 
     public static Callbacks.AfterModelCallbackSync afterModelCallbackSync = AgentCallback::validateModelOutput;
 
     private static Optional<LlmResponse> validateModelOutput(CallbackContext context, LlmResponse llmResponse) {
         if (llmResponse == null) return Optional.empty();
-        log.info("AfterModelCallback Response :::::::::::::: {}", llmResponse);
         if (llmResponse.content().isPresent()) {
             Content content = llmResponse.content().get();
             String text = content.text();
