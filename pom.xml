@@ -71,7 +71,19 @@
     <repository>
       <id>spring-snapshots</id>
       <url>https://repo.spring.io/snapshot</url>
-      <snapshots><enabled>true</enabled></snapshots>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>gcp-ai-agent-common-core</id>
+      <url>https://asia-southeast1-maven.pkg.dev/gcp-25-adk-ai-agent/ai-agent-common-core</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
@@ -84,6 +96,15 @@
         <configuration>
           <source>15</source>
           <target>15</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <mainClass>com.google.adk.web.AdkWebServer</mainClass>
+          <classpathScope>compile</classpathScope>
         </configuration>
       </plugin>
     </plugins>

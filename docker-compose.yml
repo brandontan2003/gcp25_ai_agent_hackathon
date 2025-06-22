@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  agent25-ai-agent:
+    init: true
+    build:
+      dockerfile: ./Dockerfile
+    image: agent25-ai-agent:latest
+    env_file:
+      - ./env/docker.env
+    working_dir: /app
+    container_name: agent25-ai-agent
+    ports:
+      - '8082:8080'
+    restart: on-failure
+
+networks:
+  default:
+    name: agent25-network
