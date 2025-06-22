@@ -7,6 +7,7 @@ import com.google.adk.runner.InMemoryRunner;
 import com.google.adk.sessions.Session;
 import com.google.genai.types.Content;
 import com.google.genai.types.Part;
+import gcp25.configurations.SpringContextHolder;
 import io.reactivex.rxjava3.core.Flowable;
 
 import java.nio.charset.StandardCharsets;
@@ -17,7 +18,12 @@ import static gcp25.constants.AgentCommonConstant.USER_ID;
 
 public class ProjectManagerAgent {
 
-    public static BaseAgent ROOT_AGENT = initAgent();
+    public static final BaseAgent ROOT_AGENT;
+
+    static {
+        SpringContextHolder.getContext();
+        ROOT_AGENT = initAgent();
+    }
 
     private static BaseAgent initAgent() {
         return SequentialAgent.builder()
@@ -29,14 +35,7 @@ public class ProjectManagerAgent {
     }
 
     public static void main(String[] args) {
-        InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT);
-
-        Session session =
-                runner
-                        .sessionService()
-                        .createSession(PROJECT_MANAGER_AGENT_NAME, USER_ID)
-                        .blockingGet();
-
+        ProjectManagerAgent projectManagerAgent = new ProjectManagerAgent();
         try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
             while (true) {
                 System.out.print("\nYou > ");
@@ -45,13 +44,25 @@ public class ProjectManagerAgent {
                 if ("quit".equalsIgnoreCase(userInput)) {
                     break;
                 }
-
-                Content userMsg = Content.fromParts(Part.fromText(userInput));
-                Flowable<Event> events = runner.runAsync(USER_ID, session.id(), userMsg);
-
-                System.out.print("\nAgent > ");
-                events.blockingForEach(event -> System.out.println(event.stringifyContent()));
+                projectManagerAgent.runAgent(userInput);
             }
         }
+    }
+
+
+    public void runAgent(String prompt) {
+        InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT, PROJECT_MANAGER_AGENT_NAME);
+
+        Session session = runner.sessionService().createSession(PROJECT_MANAGER_AGENT_NAME, USER_ID).blockingGet();
+
+        Content userMessage = Content.fromParts(Part.fromText(prompt));
+        Flowable<Event> eventStream = runner.runAsync(USER_ID, session.id(), userMessage);
+
+        eventStream.blockingForEach(
+                event -> {
+                    if (event.finalResponse()) {
+                        System.out.println("Final Response :::::::::: " + event.stringifyContent());
+                    }
+                });
     }
 }

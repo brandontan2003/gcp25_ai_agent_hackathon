@@ -3,7 +3,7 @@ package gcp25.agents;
 import com.google.adk.agents.LlmAgent;
 import com.google.adk.tools.FunctionTool;
 import gcp25.service.SecurityScanAgentService;
-import gcp25.validator.AgentOutputValidator;
+import gcp25.validator.AgentCallback;
 
 import static gcp25.constants.AgentCommonConstant.*;
 
@@ -32,7 +32,7 @@ public class SecurityScanAgent {
                         If no issues are found, respond: "No security issues detected in the scanned code."
                         """)
                 .tools(FunctionTool.create(SecurityScanAgentService.class, "securityScanService"))
-                .afterModelCallbackSync(AgentOutputValidator.afterModelCallbackSync)
+                .afterModelCallbackSync(AgentCallback.afterModelCallbackSync)
                 .outputKey(SECURITY_SCAN_OUTPUT)
                 .build();
     }

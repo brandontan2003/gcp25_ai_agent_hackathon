@@ -11,6 +11,8 @@
 
   <properties>
     <google.adk.version>0.1.0</google.adk.version>
+    <gcp.common.core.version>1.0.1</gcp.common.core.version>
+    <springboot.version>3.4.4</springboot.version>
   </properties>
 
   <dependencies>
@@ -19,6 +21,24 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.gcp.agent25</groupId>
+      <artifactId>gcp25_ai_agent_common_core</artifactId>
+      <version>${gcp.common.core.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>${springboot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+      <version>${springboot.version}</version>
     </dependency>
 
     <!-- The ADK Core dependency -->
@@ -46,6 +66,14 @@
       <version>2.1.0-alpha1</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>spring-snapshots</id>
+      <url>https://repo.spring.io/snapshot</url>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
